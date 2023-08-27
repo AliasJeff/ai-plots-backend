@@ -1,0 +1,32 @@
+# Compiled class file
+*.class
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Log file
+*.log
+
+# BlueJ files
+*.ctxt
+
+# Package Files #
+*.jar
+*.ear
+*.nar
+*.war
+*.tar.gz
+*.rar
+*.zip
+
+http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+.classpath
+.idea
+target
+.settings
+*.iml
+.project
+
+.DS_Store
