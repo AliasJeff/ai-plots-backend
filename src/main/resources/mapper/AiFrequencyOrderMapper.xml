@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.alias.insight.mapper.AiFrequencyOrderMapper">
+<mapper namespace="com.alias.ai.mapper.AiFrequencyOrderMapper">
 
-    <resultMap id="BaseResultMap" type="com.alias.insight.model.entity.AiFrequencyOrder">
+    <resultMap id="BaseResultMap" type="com.alias.ai.model.entity.AiFrequencyOrder">
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="userId" column="userId" jdbcType="BIGINT"/>
             <result property="purchaseQuantity" column="purchaseQuantity" jdbcType="BIGINT"/>

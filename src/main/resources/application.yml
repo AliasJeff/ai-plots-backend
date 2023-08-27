@@ -1,6 +1,6 @@
 spring:
   application:
-    name: insight-plots
+    name: ai-plots
   # 默认 dev 环境
   profiles:
     active: dev

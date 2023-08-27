@@ -10,9 +10,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.alias</groupId>
-    <artifactId>insight-plots-backend</artifactId>
+    <artifactId>ai-plots-backend</artifactId>
     <version>5.0-SNAPSHOT</version>
-    <name>insight-plots-backend</name>
+    <name>ai-plots-backend</name>
     <properties>
         <java.version>1.8</java.version>
     </properties>

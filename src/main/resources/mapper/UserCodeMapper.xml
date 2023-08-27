@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.alias.insight.mapper.UserCodeMapper">
+<mapper namespace="com.alias.ai.mapper.UserCodeMapper">
 
-    <resultMap id="BaseResultMap" type="com.alias.insight.model.entity.UserCode">
+    <resultMap id="BaseResultMap" type="com.alias.ai.model.entity.UserCode">
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="userId" column="userId" jdbcType="BIGINT"/>
             <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>

@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.alias.insight.mapper.CreditMapper">
+<mapper namespace="com.alias.ai.mapper.CreditMapper">
 
-    <resultMap id="BaseResultMap" type="com.alias.insight.model.entity.Credit">
+    <resultMap id="BaseResultMap" type="com.alias.ai.model.entity.Credit">
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="userId" column="userId" jdbcType="BIGINT"/>
             <result property="creditTotal" column="creditTotal" jdbcType="BIGINT"/>

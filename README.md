@@ -1,1 +1,1 @@
-# Insight Plots
+# Ai Plots
