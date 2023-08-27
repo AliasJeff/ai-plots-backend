@@ -5,9 +5,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
 
-/**
- * CreateTime 2023/6/24 16:17
- */
 @SpringBootTest
 class RabbitMqMessageProducerTest {
 

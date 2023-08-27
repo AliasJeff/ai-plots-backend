@@ -5,9 +5,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
 
-/**
- * CreateTime 2023/7/3 17:40
- */
 @SpringBootTest
 class BiMqMessageProducerTest {
 

@@ -8,10 +8,6 @@ import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
-/**
- *
- * CreateTime 2023/5/27 17:13
- */
 @SpringBootTest
 class ChartServiceTest {
 

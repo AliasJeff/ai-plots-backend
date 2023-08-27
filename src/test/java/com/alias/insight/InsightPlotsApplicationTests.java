@@ -5,7 +5,6 @@ import org.springframework.core.SpringVersion;
 
 /**
  * 主类测试
- *
  */
 @SpringBootTest
 class InsightPlotsApplicationTests {
