@@ -1,0 +1,22 @@
+{
+  "groups": [
+    {
+      "name": "gpt.client",
+      "type": "com.alias.ai.config.GPTClientConfig",
+      "sourceType": "com.alias.ai.config.GPTClientConfig"
+    }
+  ],
+  "properties": [
+    {
+      "name": "gpt.client.access-key",
+      "type": "java.lang.String",
+      "sourceType": "com.alias.ai.config.GPTClientConfig"
+    },
+    {
+      "name": "gpt.client.secret-key",
+      "type": "java.lang.String",
+      "sourceType": "com.alias.ai.config.GPTClientConfig"
+    }
+  ],
+  "hints": []
+}

@@ -9,9 +9,6 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-/**
- * CreateTime 2023/6/7 20:31
- */
 @Configuration
 public class ThreadPoolExecutorConfig {
 

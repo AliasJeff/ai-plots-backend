@@ -1,9 +1,6 @@
 package com.alias.ai.config;
 
 
-/**
- * 
- */
 public class AliPayConfig {
     // 商户appid
 //	public static String APPID = "";

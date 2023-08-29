@@ -1,7 +1,6 @@
 package com.alias.ai.constant;
 
 /**
- * CreateTime 2023/6/24 16:26
  * 应用到BI项目当中的mq常量
  */
 public interface BiMqConstant {

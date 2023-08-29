@@ -62,8 +62,8 @@ mybatis-plus:
 ai:
   model:
     model-id: 1660100329896673281
-# 鱼聪明SDK
-yuapi:
+# 调用GPT服务身份验证ak sk
+gpt:
   client:
     access-key: ggi3ek77xpobxuj5trqqsbtxf90desqw
     secret-key: 1f9mbspntrxclnndviyf63h3rd0x32ey

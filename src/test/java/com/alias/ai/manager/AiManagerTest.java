@@ -6,9 +6,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
 
-/**
- * CreateTime 2023/5/21 10:48
- */
 @SpringBootTest
 class AiManagerTest {
 

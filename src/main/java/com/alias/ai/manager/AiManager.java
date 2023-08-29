@@ -1,24 +1,21 @@
 package com.alias.ai.manager;
 
+import com.alias.ai.client.GPTClient;
+import com.alias.ai.common.BaseResponse;
 import com.alias.ai.common.ErrorCode;
 import com.alias.ai.config.AiModelConfig;
 import com.alias.ai.exception.BusinessException;
-import com.yupi.yucongming.dev.client.YuCongMingClient;
-import com.yupi.yucongming.dev.common.BaseResponse;
-import com.yupi.yucongming.dev.model.DevChatRequest;
-import com.yupi.yucongming.dev.model.DevChatResponse;
+import com.alias.ai.model.entity.DevChatRequest;
+import com.alias.ai.model.entity.DevChatResponse;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
-/**
- * CreateTime 2023/5/21 10:42
- */
 @Service
 public class AiManager {
 
     @Resource
-    private YuCongMingClient congMingClient;
+    private GPTClient gptClient;
 
     @Resource
     private AiModelConfig aiModelConfig;
@@ -32,10 +29,9 @@ public class AiManager {
      */
     public String doChat(String message, Long modeId) {
         DevChatRequest devChatRequest = new DevChatRequest();
-        // 鱼聪明平台模型ID
         devChatRequest.setModelId(aiModelConfig.getModelId());
         devChatRequest.setMessage(message);
-        BaseResponse<DevChatResponse> response = congMingClient.doChat(devChatRequest);
+        BaseResponse<DevChatResponse> response = gptClient.doChat(devChatRequest);
         if (response == null) {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "AI 响应错误");
         }
@@ -46,7 +42,7 @@ public class AiManager {
         DevChatRequest devChatRequest = new DevChatRequest();
         devChatRequest.setModelId(modelId);
         devChatRequest.setMessage(message);
-        BaseResponse<DevChatResponse> response = congMingClient.doChat(devChatRequest);
+        BaseResponse<DevChatResponse> response = gptClient.doChat(devChatRequest);
         if (response == null) {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "AI 响应错误");
         }

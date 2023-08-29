@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 /**
- * CreateTime 2023/6/24 15:53
  * RabbitMQ 消费者
  */
 @Component

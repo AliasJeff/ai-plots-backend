@@ -21,7 +21,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 
 /**
- * CreateTime 2023/6/24 15:53
  * BI项目 消费者
  */
 @Component

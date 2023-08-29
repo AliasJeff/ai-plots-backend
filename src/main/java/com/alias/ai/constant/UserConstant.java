@@ -16,8 +16,6 @@ public interface UserConstant {
      */
     String USER_LOGIN_STATE = "user_login";
 
-    //  region 权限
-
     /**
      * 默认角色
      */
@@ -37,5 +35,4 @@ public interface UserConstant {
      * 默认头像
      */
     String DEFAULT_AVATAR = "https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png";
-
 }

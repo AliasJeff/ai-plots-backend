@@ -11,8 +11,6 @@ public interface TextConstant {
      */
     String WAIT = "wait";
 
-    //  region 权限
-
     /**
      * 执行
      */
@@ -32,5 +30,4 @@ public interface TextConstant {
      * AI模型ID
      */
     Long MODE_ID = 1666258198769700865L;
-    // endregion
 }

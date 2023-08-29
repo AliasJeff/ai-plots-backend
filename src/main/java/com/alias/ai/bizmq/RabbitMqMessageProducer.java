@@ -7,7 +7,6 @@ import javax.annotation.Resource;
 
 /**
  *
- * CreateTime 2023/6/24 15:53
  * RabbitMQ 生产者
  */
 @Component

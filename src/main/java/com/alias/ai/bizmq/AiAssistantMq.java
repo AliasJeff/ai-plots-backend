@@ -18,7 +18,6 @@ import javax.annotation.Resource;
 import java.io.IOException;
 
 /**
- * CreateTime 2023/6/25 20:07
  * AI 问答 MQ 队列
  */
 @Slf4j

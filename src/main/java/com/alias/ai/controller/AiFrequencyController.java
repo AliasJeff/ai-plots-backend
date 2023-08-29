@@ -17,10 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
-/**
- *
- * @createTime 2023/7/11 星期二 23:03
- */
 @RestController
 @RequestMapping("/aiFrequency")
 @CrossOrigin(origins = "http://localhost:8000", allowCredentials = "true")

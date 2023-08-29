@@ -6,7 +6,6 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
 /**
- * CreateTime 2023/6/24 16:08
  * 创建测试测序用到的交换机和队列 (仅执行一次)
  */
 public class RabbitMqInitDemo {

@@ -8,10 +8,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/**
- *
- * CreateTime 2023/5/27 22:50
- */
 @Data
 @ConfigurationProperties(prefix = "spring.redis")
 @Configuration

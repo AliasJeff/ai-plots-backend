@@ -8,7 +8,6 @@ import javax.annotation.Resource;
 
 /**
  *
- * CreateTime 2023/6/24 15:53
  * BI项目 生产者
  */
 @Component

@@ -3,9 +3,6 @@ package com.alias.ai.constant;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * CreateTime 2023/5/21 17:38
- */
 public interface ChartConstant {
     /**
      * AI生成的内容分隔符
@@ -31,6 +28,7 @@ public interface ChartConstant {
      * 提取生成的图表的Echarts配置的正则
      */
     String GEN_CHART_REGEX = "\\{(?>[^{}]*(?:\\{[^{}]*}[^{}]*)*)}";
+
     /**
      * 图表默认名称的前缀
      */
@@ -49,15 +47,10 @@ public interface ChartConstant {
     /**
      * 图表上传文件后缀白名单
      */
-    List<String>  VALID_FILE_SUFFIX= Arrays.asList("xlsx","csv","xls","json");
-
-    /**
-     * 用户头像上传文件大小 2M
-     */
-    long USER_FILE_MAX_SIZE = 2 * 1024 * 1024L;
+    List<String> VALID_FILE_SUFFIX = Arrays.asList("xlsx", "csv", "xls", "json");
 
     /**
      * 图表上传文件后缀白名单
      */
-    List<String>  USER_VALID_FILE_SUFFIX= Arrays.asList("png","jpg","jpeg");
+    List<String> USER_VALID_FILE_SUFFIX = Arrays.asList("png", "jpg", "jpeg");
 }
