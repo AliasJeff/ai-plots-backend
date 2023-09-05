@@ -146,7 +146,7 @@ public class ChartServiceImpl extends ServiceImpl<ChartMapper, Chart> implements
         biResponse.setGenResult(genResult);
         // 调用次数减一
         boolean invokeAutoDecrease = aiFrequencyService.invokeAutoDecrease(loginUser.getId());
-        ThrowUtils.throwIf(!invokeAutoDecrease, ErrorCode.PARAMS_ERROR, "次数减一失败");
+        ThrowUtils.throwIf(!invokeAutoDecrease, ErrorCode.PARAMS_ERROR, "调用次数更新失败");
 
         return biResponse;
     }
@@ -291,7 +291,7 @@ public class ChartServiceImpl extends ServiceImpl<ChartMapper, Chart> implements
 
         // 调用次数减一
         boolean invokeAutoDecrease = aiFrequencyService.invokeAutoDecrease(loginUser.getId());
-        ThrowUtils.throwIf(!invokeAutoDecrease, ErrorCode.PARAMS_ERROR, "次数减一失败");
+        ThrowUtils.throwIf(!invokeAutoDecrease, ErrorCode.PARAMS_ERROR, "调用次数更新失败");
 
         return biResponse;
     }

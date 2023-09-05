@@ -14,7 +14,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
  * Knife4j 接口文档配置
- * https://doc.xiaominfo.com/knife4j/documentation/get_start.html
  */
 @Configuration
 @EnableSwagger2
@@ -37,12 +36,12 @@ public class Knife4jConfig {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 // 接口文档的标题
-                .title("智能BI系统")
+                .title("AI Plots")
                 // 接口文档的描述信息
-                .description("用户只需要导入最原始的数据集，输入想要进行分析的目标（比如帮我分析一下网站的增长趋势)，就能利用AI自动生成一个符合要求的图表以及分析结论。此外，还会有图表管理、异步生成等功能。")
-                // 提供服务的是谁？可以填写你自己的地址因为是你自己提供的服务
-                .termsOfServiceUrl("https://github.com/nanchengcyu")
-                .contact(new Contact("jeffery", "https://github.com/nanchengcyu", "zhexunchen@qq.com"))
+                .description("使用AI服务，调用接口帮助用户进行数据分析，生成可视化图表，并给出分析结论，提供同步和异步化的生成策略。")
+                // 作者信息
+                .termsOfServiceUrl("https://github.com/AliasJeff")
+                .contact(new Contact("jeffery", "https://github.com/AliasJeff", "zhexunchen@qq.com"))
                 // 版本
                 .version("1.0")
                 // 构建

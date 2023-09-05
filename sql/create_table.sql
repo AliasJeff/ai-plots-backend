@@ -255,7 +255,7 @@ CREATE TABLE `user`  (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES (1690592362125934594, 'zhexun', '123456', 'zhexun', 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png', 'admin', '男', '16638747874', 'nanchnegyu02@qq.com', 0, '2023-08-13 13:13:23', '2023-08-14 17:38:43', 1);
+INSERT INTO `user` VALUES (1690592362125934594, 'zhexun', '123456', 'zhexun', 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png', 'admin', '男', '16638747874', '123456@qq.com', 0, '2023-08-13 13:13:23', '2023-08-14 17:38:43', 1);
 INSERT INTO `user` VALUES (1690741578617942018, 'jeffery', '123456', 'jeffery', 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png', 'user', '男', NULL, NULL, 0, '2023-08-13 23:06:19', '2023-08-14 17:38:38', 1);
 INSERT INTO `user` VALUES (1690946228361175042, 'jeffery02', '8b1b4a2bb93396357991785733c79efd', 'zzz', 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png', 'admin', '男', NULL, NULL, 0, '2023-08-14 12:39:31', '2023-08-16 09:36:34', 0);
 

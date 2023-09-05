@@ -17,11 +17,9 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * 队列测试
- *
- * 
  */
 @RestController
-@RequestMapping("/queue")
+//@RequestMapping("/queue") // 测试用
 @Slf4j
 @Profile({"dev", "local"})   //版本控制访问
 @Api(tags = "QueueController")
@@ -40,7 +38,7 @@ public class QueueController {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-        },threadPoolExecutor);
+        }, threadPoolExecutor);
     }
 
     @GetMapping("/get")
