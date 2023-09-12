@@ -8,15 +8,16 @@ import java.util.Date;
 
 /**
  * 图表信息表
+ *
  * @TableName chart
  */
-@TableName(value ="chart")
+@TableName(value = "chart")
 @Data
 public class Chart implements Serializable {
     /**
      * id
      */
-    @TableId(type = IdType.ASSIGN_ID)
+    @TableId(type = IdType.AUTO)
     private Long id;
 
     /**
@@ -25,15 +26,14 @@ public class Chart implements Serializable {
     private String goal;
 
     /**
-     * 图表数据
-     */
-    private String chartData;
-
-
-    /**
      * 图表名称
      */
     private String chartName;
+
+    /**
+     * 图表数据
+     */
+    private String chartData;
 
     /**
      * 图表类型
@@ -46,7 +46,12 @@ public class Chart implements Serializable {
     private String genChart;
 
     /**
-     * 图表状态 wait-等待,running-生成中,succeed-成功生成,failed-生成失败
+     * 生成的分析结论
+     */
+    private String genResult;
+
+    /**
+     * wait-等待,running-生成中,succeed-成功生成,failed-生成失败
      */
     private String chartStatus;
 
@@ -54,11 +59,6 @@ public class Chart implements Serializable {
      * 执行信息
      */
     private String execMessage;
-
-    /**
-     * 生成的分析结论
-     */
-    private String genResult;
 
     /**
      * 创建图标用户 id
@@ -78,7 +78,6 @@ public class Chart implements Serializable {
     /**
      * 是否删除
      */
-    @TableLogic
     private Integer isDelete;
 
     @TableField(exist = false)

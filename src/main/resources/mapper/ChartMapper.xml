@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.alias.ai.mapper.ChartMapper">
 
-    <resultMap id="BaseResultMap" type="com.alias.ai.model.entity.Chart">
+    <resultMap id="BaseResultMap" type="generator.domain.Chart">
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="goal" column="goal" jdbcType="VARCHAR"/>
             <result property="chartName" column="chartName" jdbcType="VARCHAR"/>
@@ -12,6 +12,8 @@
             <result property="chartType" column="chartType" jdbcType="VARCHAR"/>
             <result property="genChart" column="genChart" jdbcType="VARCHAR"/>
             <result property="genResult" column="genResult" jdbcType="VARCHAR"/>
+            <result property="chartStatus" column="chartStatus" jdbcType="VARCHAR"/>
+            <result property="execMessage" column="execMessage" jdbcType="VARCHAR"/>
             <result property="userId" column="userId" jdbcType="BIGINT"/>
             <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
@@ -19,11 +21,10 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,goal,chartName,chartData,
-        chartType,genChart,genResult,
+        id,goal,chartName,
+        chartData,chartType,genChart,
+        genResult,chartStatus,execMessage,
         userId,createTime,updateTime,
         isDelete
     </sql>
-
-    <select id="queryChartData" resultType="java.util.Map">${queryChartSql}</select>
 </mapper>

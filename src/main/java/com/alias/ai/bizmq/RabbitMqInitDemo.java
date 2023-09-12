@@ -28,6 +28,7 @@ public class RabbitMqInitDemo {
             String queueName = "demo_queue";
             channel.queueDeclare(queueName, true, false, false, null);
             channel.queueBind(queueName, demoExchange, "demo_routingKey");
+            System.out.println("创建成功");
 
         }catch (Exception e){
 

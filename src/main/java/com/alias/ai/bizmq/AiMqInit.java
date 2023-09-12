@@ -42,6 +42,7 @@ public class AiMqInit {
             channel.exchangeDeclare(AI_DLX_EXCHANGE_NAME, BI_DIRECT_EXCHANGE);
 
             channel.queueBind(AI_DLX_QUEUE_NAME, AI_DLX_EXCHANGE_NAME, AI_DLX_ROUTING_KEY);
+            System.out.println("创建成功");
         } catch (Exception e) {
             e.printStackTrace();
         }

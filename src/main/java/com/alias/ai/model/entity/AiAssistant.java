@@ -12,6 +12,7 @@ import java.util.Date;
  * @TableName ai_assistant
  */
 @Data
+@TableName(value = "ai_assistant")
 public class AiAssistant implements Serializable {
     /**
      * id

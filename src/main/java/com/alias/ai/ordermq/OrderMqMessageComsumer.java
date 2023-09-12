@@ -17,7 +17,6 @@ import javax.annotation.Resource;
 
 /**
  * 监听订单过期的死信队列
- *
  * 
  */
 @Component

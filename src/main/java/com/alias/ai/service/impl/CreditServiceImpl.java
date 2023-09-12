@@ -14,7 +14,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 /**
-* @author MA_dou
 * @description 针对表【credit(积分表)】的数据库操作Service实现
 * @createDate 2023-06-28 21:29:40
 */

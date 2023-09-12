@@ -8,10 +8,10 @@ import java.util.Date;
 
 /**
  * 次数订单表
- * 
+ *
  * @TableName ai_frequency_order
  */
-@TableName(value ="ai_frequency_order")
+@TableName(value = "ai_frequency_order")
 @Data
 public class AiFrequencyOrder implements Serializable {
     /**

@@ -44,6 +44,7 @@ public class BiMqInit {
             channel.exchangeDeclare(BI_DLX_EXCHANGE_NAME,BI_DIRECT_EXCHANGE);
 
             channel.queueBind(BI_DLX_QUEUE_NAME,BI_DLX_EXCHANGE_NAME,BI_DLX_ROUTING_KEY);
+            System.out.println("创建成功");
         } catch (Exception e) {
             e.printStackTrace();
         }

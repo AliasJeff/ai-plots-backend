@@ -1,4 +1,8 @@
 spring:
+  config:
+    activate:
+      on-profile:
+        - prod
   application:
     name: ai-plots
   # swagger3
@@ -30,8 +34,8 @@ spring:
   # rabbitmq 信息
   rabbitmq:
     host: localhost
-    password: guest
-    username: guest
+    username: jeffery
+    password: Punchhard1..
     port: 5672
     virtual-host: /
     listener:
