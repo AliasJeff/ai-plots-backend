@@ -5,7 +5,6 @@ spring:
         - prod
   application:
     name: ai-plots
-  # swagger3
   mvc:
     path match:
       matching-strategy: ant_path_matcher
