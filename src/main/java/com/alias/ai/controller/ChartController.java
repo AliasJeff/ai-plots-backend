@@ -38,7 +38,7 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/chart")
 @Slf4j
 @Api(tags = "ChartController")
-@CrossOrigin(origins = "http://localhost:8000", allowCredentials = "true")
+//@CrossOrigin(origins = "http://localhost:8000", allowCredentials = "true")
 public class ChartController {
 
     @Resource

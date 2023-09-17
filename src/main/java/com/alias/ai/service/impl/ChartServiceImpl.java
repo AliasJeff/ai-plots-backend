@@ -21,6 +21,7 @@ import com.alias.ai.service.UserService;
 import com.alias.ai.utils.ChartUtils;
 import com.alias.ai.utils.ExcelUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,6 +35,7 @@ import java.util.concurrent.*;
  * @createDate 2023-05-14 19:20:33
  */
 @Service
+@Slf4j
 public class ChartServiceImpl extends ServiceImpl<ChartMapper, Chart> implements ChartService {
 
     @Resource
@@ -112,6 +114,7 @@ public class ChartServiceImpl extends ServiceImpl<ChartMapper, Chart> implements
         userInput.append(csvData).append("\n");
         // 调用AI
         String chartResult = aiManager.doChat(userInput.toString(), TextConstant.MODE_ID);
+        log.info("chartResult: {}", chartResult);
         // 解析内容
         String[] splits = chartResult.split(ChartConstant.GEN_CONTENT_SPLITS);
         if (splits.length < ChartConstant.GEN_ITEM_NUM) {

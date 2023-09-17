@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/aiFrequency")
-@CrossOrigin(origins = "http://localhost:8000", allowCredentials = "true")
+//@CrossOrigin(origins = "http://localhost:8000", allowCredentials = "true")
 public class AiFrequencyController {
 
     @Resource

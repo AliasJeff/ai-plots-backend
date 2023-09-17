@@ -29,12 +29,10 @@ import java.util.List;
 
 /**
  * 支付订单
- *
- * 
  */
 @RestController
 @RequestMapping("/payInfo")
-@CrossOrigin(origins = "http://localhost:8000", allowCredentials = "true")
+//@CrossOrigin(origins = "http://localhost:8000", allowCredentials = "true")
 public class AliPayInfoController {
 
     @Resource

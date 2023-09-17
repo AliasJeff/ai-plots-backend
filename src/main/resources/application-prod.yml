@@ -17,8 +17,8 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/insight_plots
-    username: root
-    password: 12345678
+    username: zhexun
+    password: Punchhard1..
   # Redis 配置
   redis:
     database: 1
@@ -30,10 +30,17 @@ spring:
     multipart:
       # 大小限制
       max-file-size: 1MB
+  # sms service
+  mail:
+    host: smtp.qq.com
+    username: zhexunchen@qq.com
+    password: ualqybfjbbnhcaab
+    default-encoding: utf-8
+    protocol: smtp
   # rabbitmq 信息
   rabbitmq:
     host: localhost
-    username: jeffery
+    username: admin
     password: Punchhard1..
     port: 5672
     virtual-host: /

@@ -37,17 +37,33 @@ import java.util.List;
 @Api(tags = "UserController")
 @RequestMapping("/user")
 @Slf4j
-@CrossOrigin(origins = "http://localhost:8000", allowCredentials = "true")
+//@CrossOrigin(origins = "http://localhost:8000", allowCredentials = "true")
 public class UserController {
     @Resource
     private UserService userService;
-
-
     @Resource
     private UserCodeService userCodeService;
     @Resource
     private CreditService creditService;
 
+    /**
+     * 发送邮箱验证码
+     * @param email
+     * @return
+     */
+    @PostMapping("/sendEmail")
+    public BaseResponse<String> sendEmail(String email) {
+        if (email == null || StringUtils.isBlank(email)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+
+        boolean b = userService.sendEmail(email);
+        if (b) {
+            return ResultUtils.success("发送验证码成功");
+        } else {
+            return ResultUtils.error(ErrorCode.SYSTEM_ERROR);
+        }
+    }
 
     /**
      * 用户注册

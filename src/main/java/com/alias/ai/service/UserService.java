@@ -21,6 +21,13 @@ import java.util.List;
 public interface UserService extends IService<User> {
 
     /**
+     * 发送邮箱验证码
+     * @param toEmail
+     * @return
+     */
+    boolean sendEmail(String toEmail);
+
+    /**
      * 用户注册
      * @param userRegisterRequest
      * @return

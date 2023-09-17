@@ -30,6 +30,13 @@ spring:
     multipart:
       # 大小限制
       max-file-size: 1MB
+  # sms service
+  mail:
+    host: smtp.qq.com
+    username: zhexunchen@qq.com
+    password: ualqybfjbbnhcaab
+    default-encoding: utf-8
+    protocol: smtp
   # rabbitmq 信息
   rabbitmq:
     host: localhost

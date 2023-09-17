@@ -1,5 +1,10 @@
 package com.alias.ai.service.impl;
 
+import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.ReUtil;
+import cn.hutool.crypto.digest.DigestUtil;
+import cn.hutool.http.HttpUtil;
+import cn.hutool.json.JSONObject;
 import com.alias.ai.common.ErrorCode;
 import com.alias.ai.constant.CommonConstant;
 import com.alias.ai.constant.UserConstant;
@@ -20,24 +25,38 @@ import com.alias.ai.service.AiFrequencyService;
 import com.alias.ai.service.UserCodeService;
 import com.alias.ai.service.UserService;
 import com.alias.ai.utils.SqlUtils;
+import com.alias.ai.utils.ValidateCodeUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
+
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+
+import static com.alias.ai.constant.RedisConstant.LOGIN_USER_PREFIX;
+import static com.alias.ai.constant.RedisConstant.REGISTER_EMAIL_PREFIX;
+import static com.alias.ai.constant.UserConstant.USER_LOGIN_STATE;
 
 /**
  * 用户服务实现
- * 
  */
 @Service
 @Slf4j
@@ -52,6 +71,70 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Resource
     private UserCodeService userCodeService;
 
+    @Resource
+    private RedisTemplate redisTemplate;
+
+    @Value("${spring.mail.username}")
+    private String fromEmail;
+
+    @Override
+    public boolean sendEmail(String toEmail) {
+        // 发件人电子邮箱
+        String from = "zhexunchen@qq.com";
+
+        // 指定发送邮件的主机为 smtp.qq.com
+        String host = "smtp.qq.com";
+
+        // 获取系统属性
+        Properties properties = System.getProperties();
+
+        // 设置邮件服务器
+        properties.setProperty("mail.smtp.host", host);
+
+        properties.put("mail.smtp.auth", "true");
+
+
+        //阿里云服务器禁用25端口，所以服务器上改为465端口
+        properties.put("mail.smtp.socketFactory.port", "465");
+        properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        properties.setProperty("mail.smtp.socketFactory.fallback", "false");
+        properties.setProperty("mail.smtp.socketFactory.port", "465");
+
+        // 获取默认session对象
+        Session session = Session.getDefaultInstance(properties, new Authenticator() {
+            public PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication("zhexunchen@qq.com", "ualqybfjbbnhcaab"); //发件人邮件用户名、密码
+            }
+        });
+
+        try {
+            // 创建默认的 MimeMessage 对象
+            MimeMessage message = new MimeMessage(session);
+
+            // Set From: 头部头字段
+            message.setFrom(new InternetAddress(from));
+
+            // Set To: 头部头字段
+            message.addRecipient(Message.RecipientType.TO,
+                    new InternetAddress(toEmail));
+
+            // Set Subject: 头部头字段
+            message.setSubject("ALIAS-API开放平台验证码");
+
+            // 设置消息体
+            String code = ValidateCodeUtils.generateValidateCode(4).toString();
+            log.info("code: {}", code);
+            redisTemplate.opsForValue().set(REGISTER_EMAIL_PREFIX + toEmail, code, 5, TimeUnit.MINUTES);
+            message.setText("您的验证码是：" + code + "\n" + "五分钟内有效");
+
+            // 发送消息
+            Transport.send(message);
+            return true;
+        } catch (MessagingException mex) {
+            mex.printStackTrace();
+            return false;
+        }
+    }
 
     /**
      * 用户注册
@@ -62,10 +145,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public long userRegister(UserRegisterRequest userRegisterRequest) {
         String userAccount = userRegisterRequest.getUserAccount();
+        String email = userRegisterRequest.getEmail();
         String userPassword = userRegisterRequest.getUserPassword();
         String checkPassword = userRegisterRequest.getCheckPassword();
+        String code = userRegisterRequest.getCode();
         // 校验
-        if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword)) {
+        if (StringUtils.isAnyBlank(userAccount, email, userPassword, checkPassword, code)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "参数为空");
         }
         if (userAccount.length() < 4) {
@@ -74,9 +159,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (userPassword.length() < 6 || checkPassword.length() < 6) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户密码过短");
         }
-        // 密码和校验密码相同
         if (!userPassword.equals(checkPassword)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "两次输入的密码不一致");
+        }
+        // 验证码校验
+        if (!StringUtils.equals((String) redisTemplate.opsForValue().get(REGISTER_EMAIL_PREFIX + email), code)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "验证码错误");
         }
 
         synchronized (userAccount.intern()) {
@@ -89,6 +177,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             User user = new User();
             user.setUserAccount(userAccount);
             user.setUserName(userAccount);
+            user.setEmail(email);
             user.setUserPassword(encryptPassword);
             user.setUserAvatar(UserConstant.DEFAULT_AVATAR);
             //user.setUserCode(userCode);
@@ -103,9 +192,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             aiFrequencyService.save(aiFrequency);
 
             // 用户编号自增
-            UserCode code = new UserCode();
-            code.setUserId(user.getId());
-            userCodeService.save(code);
+            UserCode userCode = new UserCode();
+            userCode.setUserId(user.getId());
+            userCodeService.save(userCode);
+
+            if (redisTemplate.opsForValue().get(REGISTER_EMAIL_PREFIX + email) != null) {
+                // 删除验证码
+                redisTemplate.delete(REGISTER_EMAIL_PREFIX + email);
+            }
 
             return user.getId();
         }
@@ -138,13 +232,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         queryWrapper.eq("userAccount", userAccount);
         queryWrapper.eq("userPassword", encryptPassword);
         User user = this.baseMapper.selectOne(queryWrapper);
+        if (user == null) {
+            queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("email", userAccount);
+            queryWrapper.eq("userPassword", encryptPassword);
+            user = this.baseMapper.selectOne(queryWrapper);
+        }
         // 用户不存在
         if (user == null) {
-            log.info("user login failed, userAccount cannot match userPassword");
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户不存在或密码错误");
         }
         // 3. 记录用户的登录态
-        request.getSession().setAttribute(UserConstant.USER_LOGIN_STATE, user);
+        request.getSession().setAttribute(USER_LOGIN_STATE, user);
         return this.getLoginUserVO(user);
     }
 
@@ -200,7 +299,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public User getLoginUser(HttpServletRequest request) {
         // 先判断是否已登录
-        Object userObj = request.getSession().getAttribute(UserConstant.USER_LOGIN_STATE);
+        Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
         User currentUser = (User) userObj;
         if (currentUser == null || currentUser.getId() == null) {
             throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
@@ -223,7 +322,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public User getLoginUserPermitNull(HttpServletRequest request) {
         // 先判断是否已登录
-        Object userObj = request.getSession().getAttribute(UserConstant.USER_LOGIN_STATE);
+        Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
         User currentUser = (User) userObj;
         if (currentUser == null || currentUser.getId() == null) {
             return null;
@@ -242,7 +341,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public boolean isAdmin(HttpServletRequest request) {
         // 仅管理员可查询
-        Object userObj = request.getSession().getAttribute(UserConstant.USER_LOGIN_STATE);
+        Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
         User user = (User) userObj;
         return isAdmin(user);
     }
@@ -259,11 +358,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      */
     @Override
     public boolean userLogout(HttpServletRequest request) {
-        if (request.getSession().getAttribute(UserConstant.USER_LOGIN_STATE) == null) {
+        Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
+        User user = (User) userObj;
+        if (user == null) {
             throw new BusinessException(ErrorCode.OPERATION_ERROR, "未登录");
         }
         // 移除登录态
-        request.getSession().removeAttribute(UserConstant.USER_LOGIN_STATE);
+        request.getSession().removeAttribute(USER_LOGIN_STATE);
+        redisTemplate.delete(LOGIN_USER_PREFIX + user.getId() + "_" + USER_LOGIN_STATE);
         return true;
     }
 

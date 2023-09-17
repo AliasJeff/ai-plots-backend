@@ -42,7 +42,7 @@ import java.io.IOException;
 @RequestMapping("/aiAssistant")
 @Api(tags = "AiAssistantController")
 @Slf4j
-@CrossOrigin(origins = "http://localhost:8000", allowCredentials = "true")
+//@CrossOrigin(origins = "http://localhost:8000", allowCredentials = "true")
 public class AiAssistantController {
 
     @Resource

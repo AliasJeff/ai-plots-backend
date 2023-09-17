@@ -23,7 +23,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 @Slf4j
 @Profile({"dev", "local"})   //版本控制访问
 @Api(tags = "QueueController")
-@CrossOrigin(origins = "http://localhost:8000", allowCredentials = "true")
+//@CrossOrigin(origins = "http://localhost:8000", allowCredentials = "true")
 public class QueueController {
 
     @Resource

@@ -39,7 +39,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/order")
-@CrossOrigin(origins = "http://localhost:8000", allowCredentials = "true")
+//@CrossOrigin(origins = "http://localhost:8000", allowCredentials = "true")
 public class AiFrequencyOrderController {
 
     @Resource

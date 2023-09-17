@@ -36,7 +36,7 @@ import java.util.Date;
 @RestController
 @RequestMapping("/credit")
 @Slf4j
-@CrossOrigin(origins = "http://localhost:8000", allowCredentials = "true")
+//@CrossOrigin(origins = "http://localhost:8000", allowCredentials = "true")
 public class CreditController {
 
 

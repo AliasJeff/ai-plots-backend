@@ -13,8 +13,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * 主类（项目启动入口）
  * 
  */
-// todo 如需开启 Redis，须移除 exclude 中的内容
-@SpringBootApplication(exclude = {RedisAutoConfiguration.class})
+//@SpringBootApplication(exclude = {RedisAutoConfiguration.class})
+@SpringBootApplication() // 开启redis
 @MapperScan("com.alias.ai.mapper")
 @EnableScheduling
 @EnableTransactionManagement
