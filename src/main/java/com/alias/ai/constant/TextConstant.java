@@ -2,7 +2,6 @@ package com.alias.ai.constant;
 
 /**
  * 图表常量
- *
  */
 public interface TextConstant {
 

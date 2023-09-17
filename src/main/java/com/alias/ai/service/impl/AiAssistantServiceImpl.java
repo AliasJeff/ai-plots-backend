@@ -16,7 +16,3 @@ import org.springframework.stereotype.Service;
 public class AiAssistantServiceImpl extends ServiceImpl<AiAssistantMapper, AiAssistant> implements AiAssistantService {
 
 }
-
-
-
-

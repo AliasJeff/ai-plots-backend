@@ -35,9 +35,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-/**
- * 
- */
 @RestController
 @RequestMapping("/aiAssistant")
 @Api(tags = "AiAssistantController")
@@ -86,7 +83,7 @@ public class AiAssistantController {
     }
 
     /**
-     * 删除图表
+     * 删除对话
      *
      * @param deleteRequest
      * @param request
@@ -195,7 +192,7 @@ public class AiAssistantController {
     }
 
     /**
-     * 管理员编辑图表
+     * 管理员编辑对话
      *
      * @param aiAssistantEditRequest
      * @param request

@@ -7,6 +7,7 @@ import com.alias.ai.model.vo.BiResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 
 /**
  * @description 针对表【chart(图表信息表)】的数据库操作Service
@@ -45,4 +46,11 @@ public interface ChartService extends IService<Chart> {
 
 
     void handleChartUpdateError(long chartId, String execMessage);
+
+    /**
+     * 解析AI生成的内容
+     * @param chartResult
+     * @return
+     */
+    HashMap<String, String> parseChartResult(String chartResult);
 }

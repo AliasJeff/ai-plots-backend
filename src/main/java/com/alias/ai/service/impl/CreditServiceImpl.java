@@ -73,7 +73,6 @@ public class CreditServiceImpl extends ServiceImpl<CreditMapper, Credit>
         credit.setUpdateTime(null);
         return this.updateById(credit);
     }
-
 }
 
 

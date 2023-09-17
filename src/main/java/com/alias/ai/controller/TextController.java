@@ -42,7 +42,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * 笔记转换接口
- *
  */
 @RestController
 @RequestMapping("/text")
@@ -150,7 +149,7 @@ public class TextController {
      * @return
      */
     @PostMapping("/my/update")
-    public BaseResponse<Boolean> updateMyTextTask(@RequestBody TextUpdateRequest textTaskUpdateRequest,HttpServletRequest request) {
+    public BaseResponse<Boolean> updateMyTextTask(@RequestBody TextUpdateRequest textTaskUpdateRequest, HttpServletRequest request) {
         if (textTaskUpdateRequest == null || textTaskUpdateRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -163,10 +162,11 @@ public class TextController {
         ThrowUtils.throwIf(oldTextTask == null, ErrorCode.NOT_FOUND_ERROR);
 
         //判断为自己的文本
-        ThrowUtils.throwIf(!loginUser.getId().equals(oldTextTask.getUserId()),ErrorCode.OPERATION_ERROR);
+        ThrowUtils.throwIf(!loginUser.getId().equals(oldTextTask.getUserId()), ErrorCode.OPERATION_ERROR);
         boolean result = textTaskService.updateById(textTask);
         return ResultUtils.success(result);
     }
+
     /**
      * 根据 id 获取
      *
@@ -184,6 +184,7 @@ public class TextController {
         }
         return ResultUtils.success(textTask);
     }
+
     /**
      * 根据 id 获取 图表脱敏
      *
@@ -200,9 +201,10 @@ public class TextController {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
         }
         TextTaskVO textTaskVO = new TextTaskVO();
-        BeanUtils.copyProperties(textTask,textTaskVO);
+        BeanUtils.copyProperties(textTask, textTaskVO);
         return ResultUtils.success(textTaskVO);
     }
+
     /**
      * 分页获取列表（封装类）
      *
@@ -275,6 +277,7 @@ public class TextController {
         boolean result = textTaskService.updateById(textTask);
         return ResultUtils.success(result);
     }
+
     private QueryWrapper<TextTask> getQueryWrapper(TextTaskQueryRequest textTaskQueryRequest) {
         QueryWrapper<TextTask> queryWrapper = new QueryWrapper<>();
 
@@ -290,15 +293,16 @@ public class TextController {
         Long userId = textTaskQueryRequest.getUserId();
 
 
-        queryWrapper.eq(id!=null &&id>0,"id",id);
-        queryWrapper.like(StringUtils.isNotEmpty(name),"name",name);
-        queryWrapper.eq(StringUtils.isNoneBlank(textType),"textType",textType);
-        queryWrapper.eq(ObjectUtils.isNotEmpty(userId),"userId",userId);
+        queryWrapper.eq(id != null && id > 0, "id", id);
+        queryWrapper.like(StringUtils.isNotEmpty(name), "name", name);
+        queryWrapper.eq(StringUtils.isNoneBlank(textType), "textType", textType);
+        queryWrapper.eq(ObjectUtils.isNotEmpty(userId), "userId", userId);
         queryWrapper.eq("isDelete", false);
         queryWrapper.orderBy(SqlUtils.validSortField(sortField), sortOrder.equals(CommonConstant.SORT_ORDER_ASC),
                 sortField);
         return queryWrapper;
     }
+
     /**
      * 文本数据上传(同步)
      *
@@ -323,18 +327,18 @@ public class TextController {
         String textType = textTask.getTextType();
         //从根据任务id记录表中获取数据
         QueryWrapper<TextRecord> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("textTaskId",taskId);
+        queryWrapper.eq("textTaskId", taskId);
         List<TextRecord> textRecords = textRecordService.list(queryWrapper);
 
         //将文本依次交给ai处理
         for (TextRecord textRecord : textRecords) {
             String result = null;
-            result = aiManager.doChat(textRecordService.buildUserInput(textRecord,textType).toString(), TextConstant.MODE_ID);
+            result = aiManager.doChat(textRecordService.buildUserInput(textRecord, textType).toString(), TextConstant.MODE_ID);
             textRecord.setGenTextContent(result);
             textRecord.setStatus(TextConstant.SUCCEED);
             boolean updateById = textRecordService.updateById(textRecord);
-            if (!updateById){
-                throw new BusinessException(ErrorCode.SYSTEM_ERROR,"ai返回结果保存失败");
+            if (!updateById) {
+                throw new BusinessException(ErrorCode.SYSTEM_ERROR, "ai返回结果保存失败");
             }
         }
 
@@ -350,7 +354,7 @@ public class TextController {
         textTask1.setGenTextContent(stringBuilder.toString());
         textTask1.setStatus(TextConstant.SUCCEED);
         boolean save = textTaskService.updateById(textTask1);
-        ThrowUtils.throwIf(!save,ErrorCode.SYSTEM_ERROR,"ai返回文本任务保存失败");
+        ThrowUtils.throwIf(!save, ErrorCode.SYSTEM_ERROR, "ai返回文本任务保存失败");
         AiResponse aiResponse = new AiResponse();
         aiResponse.setResultId(textTask.getId());
         return ResultUtils.success(aiResponse);
@@ -379,8 +383,8 @@ public class TextController {
         //获取任务id
         Long taskId = textTask.getId();
 
-        log.warn("准备发送信息给队列，Message={}=======================================",taskId);
-        mqMessageProducer.sendMessage(MqConstant.TEXT_EXCHANGE_NAME,MqConstant.TEXT_ROUTING_KEY,String.valueOf(taskId));
+        log.warn("准备发送信息给队列，Message={}=======================================", taskId);
+        mqMessageProducer.sendMessage(MqConstant.TEXT_EXCHANGE_NAME, MqConstant.TEXT_ROUTING_KEY, String.valueOf(taskId));
         //返回数据参数
         AiResponse aiResponse = new AiResponse();
         aiResponse.setResultId(textTask.getId());
@@ -402,7 +406,7 @@ public class TextController {
         List<TextRecord> recordList = textRecordService.list(new QueryWrapper<TextRecord>().eq("textTaskId", textTaskId));
         //校验，查看原始文本是否为空
         recordList.forEach(textRecord -> {
-            ThrowUtils.throwIf(StringUtils.isBlank(textRecord.getTextContent()),ErrorCode.PARAMS_ERROR,"文本为空");
+            ThrowUtils.throwIf(StringUtils.isBlank(textRecord.getTextContent()), ErrorCode.PARAMS_ERROR, "文本为空");
         });
 
         User loginUser = userService.getLoginUser(request);
@@ -414,9 +418,9 @@ public class TextController {
         textTask.setStatus(TextConstant.WAIT);
         textTask.setId(textTaskId);
         boolean saveResult = textTaskService.updateById(textTask);
-        ThrowUtils.throwIf(!saveResult,ErrorCode.SYSTEM_ERROR,"文本保存失败");
-        log.warn("准备发送信息给队列，Message={}=======================================",textTaskId);
-        mqMessageProducer.sendMessage(MqConstant.TEXT_EXCHANGE_NAME,MqConstant.TEXT_ROUTING_KEY,String.valueOf(textTaskId));
+        ThrowUtils.throwIf(!saveResult, ErrorCode.SYSTEM_ERROR, "文本保存失败");
+        log.warn("准备发送信息给队列，Message={}=======================================", textTaskId);
+        mqMessageProducer.sendMessage(MqConstant.TEXT_EXCHANGE_NAME, MqConstant.TEXT_ROUTING_KEY, String.valueOf(textTaskId));
         //返回数据参数
         AiResponse aiResponse = new AiResponse();
         aiResponse.setResultId(textTask.getId());

@@ -41,7 +41,7 @@ public class AiFrequencyServiceImpl extends ServiceImpl<AiFrequencyMapper, AiFre
         // 剩余次数 -1
         remainFrequency = remainFrequency - 1;
 
-        if (remainFrequency < 1) {
+        if (remainFrequency < 0) {
             throw new BusinessException(ErrorCode.OPERATION_ERROR, "剩余调用次数为0");
         }
         aiFrequency.setTotalFrequency(totalFrequency);

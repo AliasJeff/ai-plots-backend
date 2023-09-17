@@ -28,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.concurrent.*;
 
 /**
@@ -97,6 +98,10 @@ public class ChartServiceImpl extends ServiceImpl<ChartMapper, Chart> implements
             throw new BusinessException(ErrorCode.TOO_MANY_REQUEST);
         }
 
+        // 调用次数减一
+        boolean invokeAutoDecrease = aiFrequencyService.invokeAutoDecrease(loginUser.getId());
+        ThrowUtils.throwIf(!invokeAutoDecrease, ErrorCode.PARAMS_ERROR, "调用次数更新失败");
+
         // 无需Prompt，直接调用现有模型
         // 构造用户输入
         StringBuilder userInput = new StringBuilder();
@@ -116,13 +121,9 @@ public class ChartServiceImpl extends ServiceImpl<ChartMapper, Chart> implements
         String chartResult = aiManager.doChat(userInput.toString(), TextConstant.MODE_ID);
         log.info("chartResult: {}", chartResult);
         // 解析内容
-        String[] splits = chartResult.split(ChartConstant.GEN_CONTENT_SPLITS);
-        if (splits.length < ChartConstant.GEN_ITEM_NUM) {
-            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "AI生成错误");
-        }
-        // 首次生成的内容
-        String preGenChart = splits[ChartConstant.GEN_CHART_IDX].trim();
-        String genResult = splits[ChartConstant.GEN_RESULT_IDX].trim();
+        HashMap<String, String> map = parseChartResult(chartResult);
+        String preGenChart = map.get("preGenChart");
+        String genResult = map.get("genResult");
         String validGenChart = ChartUtils.getValidGenChart(preGenChart);
 
         //ThrowUtils.throwIf(StringUtils.isBlank(preGenChart), ErrorCode.PARAMS_ERROR, "AI 生成数据为空，请重试~");
@@ -147,9 +148,6 @@ public class ChartServiceImpl extends ServiceImpl<ChartMapper, Chart> implements
         biResponse.setGenChart(preGenChart);
         biResponse.setChartId(chart.getId());
         biResponse.setGenResult(genResult);
-        // 调用次数减一
-        boolean invokeAutoDecrease = aiFrequencyService.invokeAutoDecrease(loginUser.getId());
-        ThrowUtils.throwIf(!invokeAutoDecrease, ErrorCode.PARAMS_ERROR, "调用次数更新失败");
 
         return biResponse;
     }
@@ -174,6 +172,10 @@ public class ChartServiceImpl extends ServiceImpl<ChartMapper, Chart> implements
         if (!hasFrequency) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "剩余次数不足，请先充值！");
         }
+
+        // 调用次数减一
+        boolean invokeAutoDecrease = aiFrequencyService.invokeAutoDecrease(loginUser.getId());
+        ThrowUtils.throwIf(!invokeAutoDecrease, ErrorCode.PARAMS_ERROR, "调用次数更新失败");
 
         // 校验
         ThrowUtils.throwIf(StringUtils.isBlank(goal), ErrorCode.PARAMS_ERROR, "图表分析目标为空");
@@ -275,12 +277,10 @@ public class ChartServiceImpl extends ServiceImpl<ChartMapper, Chart> implements
             }
         }, threadPoolExecutor);
 
-        // 等待太久了，抛异常，超时时间
+        // 超时
         try {
             completableFuture.get(10, TimeUnit.SECONDS);
-
         } catch (Exception e) {
-            // 超时失败了
             Chart updateChartFailed = new Chart();
             updateChartFailed.setId(chart.getId());
             updateChartFailed.setChartStatus(ChartStatusEnum.FAILED.getValue());
@@ -291,10 +291,6 @@ public class ChartServiceImpl extends ServiceImpl<ChartMapper, Chart> implements
         // 返回到前端
         BiResponse biResponse = new BiResponse();
         biResponse.setChartId(chart.getId());
-
-        // 调用次数减一
-        boolean invokeAutoDecrease = aiFrequencyService.invokeAutoDecrease(loginUser.getId());
-        ThrowUtils.throwIf(!invokeAutoDecrease, ErrorCode.PARAMS_ERROR, "调用次数更新失败");
 
         return biResponse;
     }
@@ -320,6 +316,9 @@ public class ChartServiceImpl extends ServiceImpl<ChartMapper, Chart> implements
         if (!hasFrequency) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "剩余次数不足，请先充值！");
         }
+        // 调用次数减一
+        boolean invokeAutoDecrease = aiFrequencyService.invokeAutoDecrease(loginUser.getId());
+        ThrowUtils.throwIf(!invokeAutoDecrease, ErrorCode.PARAMS_ERROR, "次数减一失败");
         // 校验
         ThrowUtils.throwIf(StringUtils.isBlank(goal), ErrorCode.PARAMS_ERROR, "图表分析目标为空");
         ThrowUtils.throwIf(StringUtils.isNotBlank(chartName) && chartName.length() > 200, ErrorCode.PARAMS_ERROR, "图表名称过长");
@@ -377,9 +376,6 @@ public class ChartServiceImpl extends ServiceImpl<ChartMapper, Chart> implements
         BiResponse biResponse = new BiResponse();
         biResponse.setChartId(chart.getId());
 
-        // 调用次数减一
-        boolean invokeAutoDecrease = aiFrequencyService.invokeAutoDecrease(loginUser.getId());
-        ThrowUtils.throwIf(!invokeAutoDecrease, ErrorCode.PARAMS_ERROR, "次数减一失败");
         return biResponse;
     }
 
@@ -399,6 +395,36 @@ public class ChartServiceImpl extends ServiceImpl<ChartMapper, Chart> implements
         if (!updateResult) {
             log.error("更新图表失败状态失败" + chartId + "," + execMessage);
         }
+    }
+
+    @Override
+    public HashMap<String, String> parseChartResult(String chartResult) {
+        HashMap<String, String> result = new HashMap<>();
+
+        if (chartResult.contains(ChartConstant.GEN_CONTENT_SPLITS)) {
+            String[] splits = chartResult.split(ChartConstant.GEN_CONTENT_SPLITS);
+            if (splits.length < ChartConstant.GEN_ITEM_NUM) {
+                throw new RuntimeException("AI生成错误");
+            }
+            String preGenChart = splits[ChartConstant.GEN_CHART_IDX].trim();
+            String genResult = splits[ChartConstant.GEN_RESULT_IDX].trim();
+
+            result.put("preGenChart", preGenChart);
+            result.put("genResult", genResult);
+        } else {
+            int startIndex = chartResult.indexOf("{");
+            int endIndex = chartResult.lastIndexOf("}");
+            if (startIndex == -1 || endIndex == -1) {
+                throw new RuntimeException("AI生成错误");
+            }
+            String preGenChart = chartResult.substring(startIndex, endIndex + 1).trim();
+            String genResult = chartResult.substring(endIndex + 1).trim();
+
+            result.put("preGenChart", preGenChart);
+            result.put("genResult", genResult);
+        }
+
+        return result;
     }
 }
 
