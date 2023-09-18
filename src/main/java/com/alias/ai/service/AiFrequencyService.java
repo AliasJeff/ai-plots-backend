@@ -24,4 +24,11 @@ public interface AiFrequencyService extends IService<AiFrequency> {
      */
     boolean hasFrequency(long userId);
 
+    /**
+     * 每日签到领取调用次数
+     * @param userId
+     * @return
+     */
+    boolean sign(Long userId);
+
 }

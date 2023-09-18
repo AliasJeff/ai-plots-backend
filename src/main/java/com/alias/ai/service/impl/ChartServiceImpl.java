@@ -254,9 +254,10 @@ public class ChartServiceImpl extends ServiceImpl<ChartMapper, Chart> implements
                 handleChartUpdateError(chart.getId(), "AI生成错误");
                 return;
             }
+            HashMap<String, String> map = parseChartResult(chartResult);
             // 生成前的内容
-            String preGenChart = splits[ChartConstant.GEN_CHART_IDX].trim();
-            String genResult = splits[ChartConstant.GEN_RESULT_IDX].trim();
+            String preGenChart = map.get("preGenChart");
+            String genResult = map.get("genResult");
             // 生成后端检验
             String validGenChart = ChartUtils.getValidGenChart(preGenChart);
 

@@ -1,5 +1,9 @@
 package com.alias.ai.service.impl;
 
+import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
+import com.alias.ai.constant.AiFrequencyConstant;
+import com.alias.ai.constant.CreditConstant;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.alias.ai.common.ErrorCode;
@@ -71,6 +75,39 @@ public class AiFrequencyServiceImpl extends ServiceImpl<AiFrequencyMapper, AiFre
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "调用次数不足");
         }
         return true;
+    }
+
+    @Override
+    public boolean sign(Long userId) {
+        if (userId == null) {
+            throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
+        }
+        synchronized (userId.toString().intern()) {
+            QueryWrapper<AiFrequency> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("userId", userId);
+            AiFrequency aiFrequency = this.getOne(queryWrapper);
+            ThrowUtils.throwIf(aiFrequency == null, ErrorCode.NOT_FOUND_ERROR);
+            //判断今天是否已经签过
+            if (DateUtil.isSameDay(aiFrequency.getUpdateTime(), new DateTime())) {
+                return false;
+            }
+            Integer total = aiFrequency.getRemainFrequency() + AiFrequencyConstant.FREQUENCY_DAILY;
+            aiFrequency.setRemainFrequency(total);
+            //保持更新时间
+            aiFrequency.setUpdateTime(null);
+            return this.updateById(aiFrequency);
+        }
+    }
+
+    private Integer getFrequencyTotal(Long userId) {
+        if (userId == null) {
+            throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
+        }
+        QueryWrapper<AiFrequency> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("userId", userId);
+        AiFrequency aiFrequency = this.getOne(queryWrapper);
+        ThrowUtils.throwIf(aiFrequency == null, ErrorCode.NOT_FOUND_ERROR);
+        return aiFrequency.getTotalFrequency();
     }
 }
 

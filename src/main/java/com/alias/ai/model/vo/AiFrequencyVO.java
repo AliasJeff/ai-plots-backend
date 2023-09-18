@@ -2,10 +2,6 @@ package com.alias.ai.model.vo;
 
 import lombok.Data;
 
-/**
- *
- * @createTime 2023/7/11 星期二 23:07
- */
 @Data
 public class AiFrequencyVO {
 

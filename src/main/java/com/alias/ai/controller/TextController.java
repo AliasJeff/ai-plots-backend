@@ -17,10 +17,7 @@ import com.alias.ai.model.entity.TextTask;
 import com.alias.ai.model.entity.User;
 import com.alias.ai.model.vo.AiResponse;
 import com.alias.ai.model.vo.TextTaskVO;
-import com.alias.ai.service.CreditService;
-import com.alias.ai.service.TextRecordService;
-import com.alias.ai.service.TextTaskService;
-import com.alias.ai.service.UserService;
+import com.alias.ai.service.*;
 import com.alias.ai.utils.SqlUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -58,11 +55,12 @@ public class TextController {
     private UserService userService;
 
     @Resource
+    private AiFrequencyService aiFrequencyService;
+
+    @Resource
     private RedisLimiterManager redisLimiterManager;
     @Resource
     private AiManager aiManager;
-    @Resource
-    private CreditService creditService;
     @Resource
     ThreadPoolExecutor threadPoolExecutor;
 
@@ -377,6 +375,17 @@ public class TextController {
         User loginUser = userService.getLoginUser(request);
         //限流
         redisLimiterManager.doRateLimit("doRateLimit_" + loginUser.getId());
+
+        // 查询是否有调用次数
+        boolean hasFrequency = aiFrequencyService.hasFrequency(loginUser.getId());
+        if (!hasFrequency) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "剩余次数不足，请先充值！");
+        }
+
+        // 调用次数减一
+        boolean invokeAutoDecrease = aiFrequencyService.invokeAutoDecrease(loginUser.getId());
+        ThrowUtils.throwIf(!invokeAutoDecrease, ErrorCode.PARAMS_ERROR, "调用次数更新失败");
+
         //获取文本任务并校验
         TextTask textTask = textTaskService.getTextTask(multipartFile, genTextTaskByAiRequest, loginUser);
 
@@ -412,6 +421,16 @@ public class TextController {
         User loginUser = userService.getLoginUser(request);
         //限流
         redisLimiterManager.doRateLimit("doRateLimit_" + loginUser.getId());
+
+        // 查询是否有调用次数
+        boolean hasFrequency = aiFrequencyService.hasFrequency(loginUser.getId());
+        if (!hasFrequency) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "剩余次数不足，请先充值！");
+        }
+
+        // 调用次数减一
+        boolean invokeAutoDecrease = aiFrequencyService.invokeAutoDecrease(loginUser.getId());
+        ThrowUtils.throwIf(!invokeAutoDecrease, ErrorCode.PARAMS_ERROR, "调用次数更新失败");
 
         //保存数据库 wait
         TextTask textTask = new TextTask();

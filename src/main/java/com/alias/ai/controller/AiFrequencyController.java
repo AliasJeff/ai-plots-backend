@@ -81,4 +81,17 @@ public class AiFrequencyController {
         }
         return ResultUtils.success(aiFrequencyServiceOne.getId());
     }
+
+    /**
+     * 每日签到领取调用次数
+     * @param request
+     * @return
+     */
+    @GetMapping("/sign")
+    public BaseResponse<Boolean> signFrequency(HttpServletRequest request) {
+        User loginUser = userService.getLoginUser(request);
+        Long userId = loginUser.getId();
+        Boolean result = aiFrequencyService.sign(userId);
+        return ResultUtils.success(result);
+    }
 }

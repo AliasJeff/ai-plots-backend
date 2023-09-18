@@ -24,6 +24,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -322,21 +323,19 @@ public class UserController {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
 
-        // 调用 updateMyUser 方法来更新个人信息
-        boolean updateResult = updateMyUser(userUpdateMyRequest, request);
-
-        return ResultUtils.success(updateResult);
-    }
-
-    // 移除原来的 updateMyUser 方法，将其逻辑合并到 updateMyInfo 方法中
-    private boolean updateMyUser(UserUpdateMyRequest userUpdateMyRequest, HttpServletRequest request) {
         User loginUser = userService.getLoginUser(request);
         User user = new User();
         BeanUtils.copyProperties(userUpdateMyRequest, user);
         user.setId(loginUser.getId());
+        String password = user.getUserPassword();
+        if (password != null) {
+            String encryptPassword = DigestUtils.md5DigestAsHex((UserConstant.SALT + password).getBytes());
+            user.setUserPassword(encryptPassword);
+        }
         boolean result = userService.updateById(user);
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
-        return true;
+
+        return ResultUtils.success(result);
     }
 
     /**
