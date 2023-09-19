@@ -1,0 +1,83 @@
+spring:
+  config:
+    activate:
+      on-profile:
+        - prod
+  application:
+    name: ai-plots
+  mvc:
+    path match:
+      matching-strategy: ant_path_matcher
+  # session 配置
+  session:
+    # store-type: redis
+    # 1 天过期
+    timeout: 86400
+  # 数据库配置
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/insight_plots
+    username: xxxxxx
+    password: xxxxxx
+  # Redis 配置
+  redis:
+    database: 1
+    host: localhost
+    port: 6379
+    timeout: 5000
+  # 文件上传
+  servlet:
+    multipart:
+      # 大小限制
+      max-file-size: 1MB
+  # sms service
+  mail:
+    host: smtp.qq.com
+    username: xxxxxx
+    password: xxxxxx
+    default-encoding: utf-8
+    protocol: smtp
+  # rabbitmq 信息
+  rabbitmq:
+    host: localhost
+    username: xxxxxx
+    password: xxxxxx
+    port: 5672
+    virtual-host: /
+    listener:
+      direct:
+        acknowledge-mode: manual
+server:
+  address: 0.0.0.0
+  port: 8080
+  servlet:
+    context-path: /api
+    # cookie 30 天过期
+    session:
+      cookie:
+        max-age: 2592000
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: false
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-field: isDelete # 全局逻辑删除的实体字段名
+      logic-delete-value: 1 # 逻辑已删除值（默认为 1）
+      logic-not-delete-value: 0 # 逻辑未删除值（默认为 0）
+# 要使用的模型ID
+ai:
+  model:
+    model-id: 1234123412341234
+# 调用GPT服务身份验证ak sk
+gpt:
+  client:
+    access-key: xxxxxx
+    secret-key: xxxxxx
+# 支付宝沙箱
+pay:
+  qrcodeurl: http://localhost:8080/api/alipay/tradeQuery?alipayAccountNo=%s
+  alipay:
+    APP_ID: xxxxxx
+    APP_PRIVATE_KEY: xxxxxx
+    ALIPAY_PUBLIC_KEY: xxxxxx
