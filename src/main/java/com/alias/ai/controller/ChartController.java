@@ -297,4 +297,10 @@ public class ChartController {
         ThrowUtils.throwIf(biResponse == null, ErrorCode.SYSTEM_ERROR, "AI生成错误");
         return ResultUtils.success(biResponse);
     }
+
+    @GetMapping("/getChartCount")
+    public BaseResponse<Integer> getChartCount(HttpServletRequest request) {
+        Integer count = Math.toIntExact(chartService.count());
+        return ResultUtils.success(count);
+    }
 }

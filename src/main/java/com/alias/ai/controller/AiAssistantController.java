@@ -321,4 +321,10 @@ public class AiAssistantController {
         return ResultUtils.success(aiAssistant);
     }
 
+    @GetMapping("/getAiAssistantCount")
+    public BaseResponse<Integer> getCount(HttpServletRequest request) {
+        Integer count = Math.toIntExact(aiAssistantService.count());
+        return ResultUtils.success(count);
+    }
+
 }

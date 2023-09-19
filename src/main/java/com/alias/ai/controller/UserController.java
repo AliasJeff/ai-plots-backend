@@ -355,5 +355,14 @@ public class UserController {
         return ResultUtils.success(creditTotal);
     }
 
-
+    /**
+     * 获取用户数量
+     * @param request
+     * @return
+     */
+    @GetMapping("/getUserCount")
+    public BaseResponse<Integer> getUserCount(HttpServletRequest request) {
+        Integer count = Math.toIntExact(userService.count());
+        return ResultUtils.success(count);
+    }
 }

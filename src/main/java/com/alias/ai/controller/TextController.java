@@ -444,6 +444,11 @@ public class TextController {
         AiResponse aiResponse = new AiResponse();
         aiResponse.setResultId(textTask.getId());
         return ResultUtils.success(aiResponse);
+    }
 
+    @GetMapping("/textCount")
+    public BaseResponse<Integer> getTextCount(HttpServletRequest request) {
+        Integer count = Math.toIntExact(textTaskService.count());
+        return ResultUtils.success(count);
     }
 }
