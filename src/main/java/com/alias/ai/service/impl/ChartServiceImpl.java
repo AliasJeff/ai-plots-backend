@@ -248,12 +248,6 @@ public class ChartServiceImpl extends ServiceImpl<ChartMapper, Chart> implements
             String chartResult = aiManager.doChat(userInput.toString(), TextConstant.MODE_ID);
 
             // 解析内容
-            String[] splits = chartResult.split(ChartConstant.GEN_CONTENT_SPLITS);
-            if (splits.length < ChartConstant.GEN_ITEM_NUM) {
-                //throw new BusinessException(ErrorCode.SYSTEM_ERROR, "");
-                handleChartUpdateError(chart.getId(), "AI生成错误");
-                return;
-            }
             HashMap<String, String> map = parseChartResult(chartResult);
             // 生成前的内容
             String preGenChart = map.get("preGenChart");

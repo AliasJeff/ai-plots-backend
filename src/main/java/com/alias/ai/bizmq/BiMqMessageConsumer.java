@@ -19,6 +19,7 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 
 /**
  * BI项目 消费者
@@ -77,15 +78,10 @@ public class BiMqMessageConsumer {
         String chartResult = aiManager.doChat(buildUserInput(chart), TextConstant.MODE_ID);
 
         // 解析内容
-        String[] splits = chartResult.split(ChartConstant.GEN_CONTENT_SPLITS);
-        if (splits.length < ChartConstant.GEN_ITEM_NUM) {
-            // 拒绝消息
-            channel.basicNack(deliveryTag, false, false);
-            chartService.handleChartUpdateError(chart.getId(), "AI生成错误");
-            return;
-        }
+        HashMap<String, String> map = chartService.parseChartResult(chartResult);
         // 生成前的内容
-        String preGenChart = splits[ChartConstant.GEN_CHART_IDX].trim();
+        String preGenChart = map.get("preGenChart");
+        String genResult = map.get("genResult");
 
         if (StringUtils.isBlank(preGenChart)){
             // 内容生成错误，拒绝消息
@@ -104,7 +100,6 @@ public class BiMqMessageConsumer {
             throw new BusinessException(ErrorCode.PARAMS_ERROR,"AI生成错误");
         }
 
-        String genResult = splits[ChartConstant.GEN_RESULT_IDX].trim();
         // 生成后端检验
         //String validGenChart = ChartUtils.getValidGenChart(preGenChart);
 
